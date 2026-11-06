@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的专属导航库</title>
+	
+    <style>
+        :root {
+            --primary-color: #4F46E5;
+            --bg-color: #F3F4F6;
+            --text-main: #1F2937;
+            --text-muted: #6B7280;
+            --card-bg: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 侧边栏样式 */
+        .sidebar {
+            width: 210px;
+            background-color: var(--card-bg);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 20px 0;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.04);
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 5px;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background-color: #E5E7EB;
+            border-radius: 3px;
+        }
+
+        .sidebar h2 {
+            padding: 0 20px 15px;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            border-bottom: 1px solid #F3F4F6;
+            margin-bottom: 8px;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 11px 20px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .nav-item:hover {
+            background-color: #EEF2FF;
+            color: var(--primary-color);
+            border-right: 3px solid var(--primary-color);
+        }
+
+        /* 主内容区样式 */
+        .main-content {
+            flex: 1;
+            margin-left: 210px;
+            padding: 25px 35px;
+        }
+
+        .category-section {
+            margin-bottom: 30px;
+            scroll-margin-top: 15px;
+        }
+
+        .category-title {
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #E5E7EB;
+            color: #111827;
+            font-weight: 600;
+        }
+
+        /* 舒适网格 */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 14px;
+        }
+
+        /* 舒适卡片样式：关键改动 align-items: center */
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 12px 14px;
+            text-decoration: none;
+            border: 1px solid #E5E7EB;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center; /* 完美上下居中对齐 */
+            overflow: hidden;
+            height: 68px; /* 固定高度保证整齐 */
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.08);
+            border-color: var(--primary-color);
+        }
+
+        .card-icon {
+            width: 22px;
+            height: 22px;
+            margin-right: 10px;
+            flex-shrink: 0;
+            border-radius: 4px;
+            object-fit: cover;
+            background-color: #F9FAFB;
+        }
+
+        .card-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card h3 {
+            font-size: 0.92rem;
+            color: var(--text-main);
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 2px;
+        }
+
+        .card:hover h3 {
+            color: var(--primary-color);
+        }
+
+        .card p {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* 响应式布局：桌面端保持原样，手机端优先高密度展示 */
+        html {
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            width: 100%;
+            min-width: 0;
+            overflow-x: hidden;
+        }
+
+        .main-content,
+        .category-section,
+        .grid-container {
+            min-width: 0;
+        }
+
+        .grid-container {
+            grid-template-columns: repeat(auto-fill, minmax(min(210px, 100%), 1fr));
+        }
+
+        @media (max-width: 768px) {
+            body {
+                display: block;
+                width: 100%;
+                min-width: 0;
+                overflow-x: hidden;
+            }
+
+            .sidebar {
+                position: sticky;
+                top: 0;
+                left: auto;
+                width: 100%;
+                height: auto;
+                max-height: none;
+                padding: 8px 10px;
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                align-items: center;
+                gap: 5px;
+                overflow-x: auto;
+                overflow-y: hidden;
+                white-space: nowrap;
+                background-color: var(--card-bg);
+                border-bottom: 1px solid #E5E7EB;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+
+            .sidebar::-webkit-scrollbar { display: none; }
+
+            .sidebar h2 {
+                flex: 0 0 auto;
+                width: auto;
+                padding: 5px 7px;
+                margin: 0;
+                border: 0;
+                font-size: 0.9rem;
+                white-space: nowrap;
+            }
+
+            .nav-item {
+                display: inline-flex;
+                align-items: center;
+                flex: 0 0 auto;
+                margin: 0;
+                padding: 7px 10px;
+                border: 1px solid #E5E7EB;
+                border-radius: 18px;
+                background: #F9FAFB;
+                font-size: 0.8rem;
+                line-height: 1.25;
+                white-space: nowrap;
+            }
+
+            .nav-item:hover {
+                border-right: 1px solid #E5E7EB;
+            }
+
+            .main-content {
+                width: 100%;
+                min-width: 0;
+                margin-left: 0;
+                padding: 14px 10px 24px;
+            }
+
+            .category-section {
+                margin-bottom: 22px;
+                scroll-margin-top: 60px;
+            }
+
+            .category-title {
+                font-size: 1.02rem;
+                line-height: 1.4;
+                margin-bottom: 9px;
+                padding-bottom: 6px;
+                overflow-wrap: anywhere;
+            }
+
+            /* 手机始终至少两列，避免窄屏退化成一行一个网址 */
+            .grid-container {
+                width: 100%;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 8px;
+            }
+
+            .card {
+                width: 100%;
+                min-width: 0;
+                height: 62px;
+                padding: 8px;
+                border-radius: 9px;
+                gap: 6px;
+                align-items: center;
+            }
+
+            .card-icon {
+                width: 18px;
+                height: 18px;
+                margin-right: 0;
+            }
+
+            .card-info {
+                flex: 1 1 0;
+                min-width: 0;
+                overflow: hidden;
+            }
+
+            .card h3 {
+                max-width: 100%;
+                font-size: 0.78rem;
+                line-height: 1.3;
+                margin-bottom: 2px;
+            }
+
+            .card p {
+                font-size: 0.66rem;
+                line-height: 1.25;
+                overflow-wrap: anywhere;
+            }
+        }
+
+        /* 小屏手机也保留两列，只进一步压缩间距 */
+        @media (max-width: 380px) {
+            .main-content {
+                padding: 12px 8px 20px;
+            }
+
+            .grid-container {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 7px;
+            }
+
+            .card {
+                height: 60px;
+                padding: 7px;
+                gap: 5px;
+            }
+
+            .card-icon {
+                width: 16px;
+                height: 16px;
+            }
+
+            .card h3 {
+                font-size: 0.74rem;
+            }
+
+            .card p {
+                font-size: 0.62rem;
+            }
+        }
+
+        /* 大屏手机横屏及小平板可以显示三列 */
+        @media (min-width: 600px) and (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 10px;
+            }
+
+            .card {
+                height: 64px;
+                padding: 9px;
+            }
+
+            .card h3 { font-size: 0.82rem; }
+            .card p { font-size: 0.68rem; }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .main-content { padding: 24px 20px; }
+            .grid-container {
+                grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar" id="sidebar">
+        <h2>🧭 导航目录</h2>
+    </div>
+
+    <div class="main-content" id="mainContent">
+    </div>
+
+    <script>
+        const sites = [
+			{ name: 'chatgpt', desc: 'AI领航者', url: 'https://chatgpt.com/chat', category: 'ai' },
+			{ name: 'gemini', desc: 'google AI', url: 'https://gemini.google.com/', category: 'ai' },
+            { name: '通义千问', desc: 'Qwen最新模型体验', url: 'https://www.qianwen.com/chat', category: 'ai' },
+            { name: '豆包', desc: 'doubao', url: 'https://www.doubao.com/chat/', category: 'ai' },
+            { name: 'MiniMax Agent', desc: '简单指令, 无限可能', url: 'https://agent.minimaxi.com/', category: 'ai' },
+            { name: '扣子', desc: '抖音扣子', url: 'https://www.coze.cn/home', category: 'ai' },
+            { name: '灵光', desc: '全模态AI助手', url: 'https://www.lingguang.com/chat', category: 'ai' },
+			{ name: 'workbuddy', desc: 'ai助手', url: 'https://www.workbuddy.cn/profile/plans-usage', category: 'ai' },
+			
+			{ name: '百家号', desc: 'baidu百家', url: 'https://baijiahao.baidu.com', category: 'social' },
+			{ name: '小红书', desc: '图文社区', url: 'https://creator.xiaohongshu.com/publish/publish?source=official', category: 'social' },
+			{ name: '微信表情', desc: '表情开放平台', url: 'https://sticker.weixin.qq.com', category: 'social' },
+			
+			
+            { name: 'Stitch - Design with AI', desc: 'ai交互', url: 'https://stitch.withgoogle.com/', category: 'AIagent' },
+            { name: 'GemDesign', desc: 'AI时代的高保真原型设计工具', url: 'https://design.gemcoder.com/#/', category: 'AIagent' },
+            { name: 'Lovart', desc: '全球首个设计智能体', url: 'https://www.lovart.ai/zh/home', category: 'AIagent' },
+            { name: 'NotebookLM', desc: 'PPT演示文稿', url: 'https://notebooklm.google.com/', category: 'AIagent' },
+            { name: 'Gamma.app', desc: 'PPT演示文稿', url: 'https://gamma.app/', category: 'AIagent' },
+            { name: '听脑AI', desc: '录音转文字助手', url: 'https://itingnao.com/home', category: 'AIagent' },
+            { name: 'ChatExcel', desc: '智能表格', url: 'https://chatexcel.com/blog/tutorial/chatexcel-pro/', category: 'AIagent' },
+			
+            { name: 'Look Scanned', desc: '扫描', url: 'https://lookscanned.io/scan', category: 'TBtools' },
+            { name: 'Bgsub', desc: '去除图片背景', url: 'https://zh.bgsub.com/webapp/', category: 'TBtools' },
+            { name: 'TinyPNG', desc: '图像压缩', url: 'https://tinify.cn/', category: 'TBtools' },
+            { name: 'I❤️PDF', desc: 'PDF工具', url: 'https://www.ilovepdf.com/zh-cn', category: 'TBtools' },
+			{ name: '提取印章', desc: '小工具合集', url: 'https://netfisher.com/zh-CN/tools/seal-extractor', category: 'TBtools' },
+			{ name: '超级PDF', desc: 'PDF工具', url: 'https://xpdf.cn/pdf-to-word', category: 'TBtools' },
+		
+			
+			{ name: 'Figma', desc: '协作设计', url: 'https://www.figma.com', category: 'design' },
+			{ name: '即时设计', desc: '在线设计网站', url: 'https://js.design/workspace', category: 'design' },
+			{ name: 'mastergo', desc: '在线设计', url: 'https://mastergo.com/mastergo-vs-figma', category: 'design' },
+			{ name: '花瓣网', desc: '设计灵感', url: 'https://www.huaban.com', category: 'design' },
+			
+            
+            { name: '腾讯文档', desc: '来自「书签栏」书签', url: 'https://docs.qq.com/desktop', category: 'tools' },
+            { name: '迅捷画图', desc: '思维导图流程图', url: 'https://www.liuchengtu.com/home/myfile/', category: 'tools' },
+            { name: '百度翻译', desc: '多语言翻译', url: 'https://fanyi.baidu.com', category: 'tools' },
+            { name: '有道翻译', desc: '智能翻译', url: 'https://dict.youdao.com', category: 'tools' },
+			
+			
+			// 上海房价
+			{ name: '上海房产官网', desc: '上海市房地产交易中心', url: 'https://www.fangdi.com.cn/trade/trade.html', category: 'house' },
+			{ name: '房天下', desc: '可看半年房产数据', url: 'https://fdc.fang.com/data/house/house_sh.htm', category: 'house' },
+			{ name: '好好选房', desc: '小程序', url: 'https://www.amillion.cn/', category: 'house' },
+			{ name: '上海二手房网签数据记录', desc: 'github项目', url: 'https://github.com/jozhn/shanghai-house-data-view', category: 'house' },
+		  
+		    { name: '国家中小学', desc: '智慧教育', url: 'https://basic.smartedu.cn/syncClassroom?defaultTag=e7bbb2de-0590-11ed-9c79-92fc3b3249d5%2Fe7bbd296-0590-11ed-9c79-92fc3b3249d5%2F6a749654-0772-11ed-ac74-092ab92074e6%2F44bee8bc-54e6-11ed-9c34-850ba61fa9f4%2Fff8080814371757b014390f883db0453', category: 'education' }, 
+		    { name: '在线新华字典', desc: '新华字典', url: 'https://zd.hwxnet.com/', category: 'education' },
+            { name: '学汉字', desc: '汉字演变', url: 'https://www.learnm.org/', category: 'education' },
+            { name: '上海空中课堂', desc: '空中课堂', url: 'https://basic.sh.smartedu.cn/', category: 'education' },
+            { name: '吴金闪的书们', desc: '吴金闪的工作和思考', url: 'https://www.systemsci.org/jinshanw/books/', category: 'education' },
+            { name: '风变编程', desc: '在线编程', url: 'https://www.pypypy.cn/app#/', category: 'education' },
+            { name: '悟空教育', desc: '在线下载免费中文学习资源', url: 'https://www.wukongsch.com/zh/resources/chinese/', category: 'education' },
+			
+			
+            { name: 'BDwork', desc: '商务合作平台', url: 'https://www.bdwork.com/', category: 'business' },
+            { name: 'Fastadmin', desc: '插件市场', url: 'https://www.fastadmin.net/store.html', category: 'business' },
+            { name: '好象科技官网', desc: '插件源码', url: 'https://www.likeshop.cn/product_demo_center', category: 'business' },
+            { name: 'niushop', desc: '插件源码', url: 'https://www.niushop.com/', category: 'business' },
+			
+		
+            { name: '磁力熊', desc: '豆瓣高分电影1080P磁力下载', url: 'https://www.cilixiong.org/', category: 'other' }
+        ];
+
+        const categoryMap = {
+            'ai': '🤖 AI 通用',
+            'social': '💬 社交媒体',			
+            'AIagent': '🧠 AI Agent',
+			'house': '🏡 房产数据',
+            'TBtools': '🧰 TB 工具',
+			'design': '📐 在线设计',
+            'tools': '⚡ 工具提效',
+            'education': '📚 教育平台',
+            'business': '💼 商务资源',
+            'other': '🌈 其他'
+        };
+
+        const groupedSites = sites.reduce((acc, site) => {
+            if (!acc[site.category]) acc[site.category] = [];
+            acc[site.category].push(site);
+            return acc;
+        }, {});
+
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+
+        function getDomain(url) {
+            try { return new URL(url).hostname; } catch (e) { return ''; }
+        }
+
+        for (const [categoryKey, sitesArray] of Object.entries(groupedSites)) {
+            const categoryName = categoryMap[categoryKey] || categoryKey;
+            const sectionId = `cat-${categoryKey}`;
+
+            const navLink = document.createElement('a');
+            navLink.href = `#${sectionId}`;
+            navLink.className = 'nav-item';
+            navLink.textContent = categoryName;
+            sidebar.appendChild(navLink);
+
+            const section = document.createElement('div');
+            section.className = 'category-section';
+            section.id = sectionId;
+
+            const title = document.createElement('h2');
+            title.className = 'category-title';
+            title.textContent = categoryName;
+            section.appendChild(title);
+
+            const grid = document.createElement('div');
+            grid.className = 'grid-container';
+
+            sitesArray.forEach(site => {
+                const domain = getDomain(site.url);
+                const iconUrl = domain ? `https://www.google.com/s2/favicons?domain=${domain}&sz=32` : '';
+
+                const card = document.createElement('a');
+                card.href = site.url;
+                card.target = '_blank';
+                card.className = 'card';
+                card.innerHTML = `
+                    <img class="card-icon" src="${iconUrl}" alt="icon" loading="lazy" onerror="this.style.display='none'">
+                    <div class="card-info">
+                        <h3 title="${site.name}">${site.name}</h3>
+                        <p title="${site.desc}">${site.desc}</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            section.appendChild(grid);
+            mainContent.appendChild(section);
+        }
+    </script>
+</body>
+</html>
